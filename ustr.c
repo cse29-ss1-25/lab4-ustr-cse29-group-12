@@ -94,8 +94,17 @@ Given 2 strings s1 and s2, returns a string that is the result of
 concatenating s1 and s2. 
 */
 UStr concat(UStr s1, UStr s2) {
-	// TODO: implement this
+	int32_t new_bytes = s1.bytes + s2.bytes;
 
+        char *new_contents = malloc(new_bytes + 1);
+        strncpy(new_contents, s1.contents, s1.bytes);
+
+        strncpy(new_contents + s1.bytes, s2.contents, s2.bytes);
+        new_contents[new_bytes] = 0;
+
+        UStr u = new_ustr(new_contents);
+        free(new_contents);
+        return u;// TODO: implement this
 }
 
 /*
