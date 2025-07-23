@@ -38,7 +38,7 @@ Returns an empty string on invalid range.
 */
 UStr substring(UStr s, int32_t start, int32_t end) {
 	if (start < 0 || end <= start || start >= s.codepoints || end > s.codepoints) {
-		char* empty = "";
+		char* empty = "\0";
 		UStr u = new_ustr(empty);
 		return u;
 	}
@@ -47,6 +47,7 @@ UStr substring(UStr s, int32_t start, int32_t end) {
 		for (int i = 0; i < end - start; i++) {
 			substring[i] = s.contents[i + start];
 		}
+		substring[end - start] = '\0';
 		UStr u = new_ustr(substring);
 		free(substring);
 		return u;
@@ -82,7 +83,9 @@ UStr substring(UStr s, int32_t start, int32_t end) {
         for (int i = 0; i < cp_end - cp_start; i++) {
                 substring[i] = s.contents[i + cp_start];
         }
+	substring[cp_end - cp_start] = '\0';
         UStr u = new_ustr(substring);
+	free(substring);
         return u; 
 }
 
