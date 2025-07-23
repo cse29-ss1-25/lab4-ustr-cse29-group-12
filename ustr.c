@@ -37,7 +37,7 @@ and ending at index end (exclusive).
 Returns an empty string on invalid range.
 */
 UStr substring(UStr s, int32_t start, int32_t end) {
-	if (start < 0 || end <= start || start >= s.codepoints || end >= s.codepoints) {
+	if (start < 0 || end <= start || start >= s.codepoints || end > s.codepoints) {
 		char* empty = "";
 		UStr u = new_ustr(empty);
 		return u;
@@ -48,6 +48,7 @@ UStr substring(UStr s, int32_t start, int32_t end) {
 			substring[i] = s.contents[i + start];
 		}
 		UStr u = new_ustr(substring);
+		free(substring);
 		return u;
 	}
 	int count = 0;
