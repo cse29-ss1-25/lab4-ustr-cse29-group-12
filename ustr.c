@@ -37,8 +37,52 @@ and ending at index end (exclusive).
 Returns an empty string on invalid range.
 */
 UStr substring(UStr s, int32_t start, int32_t end) {
-	// TODO: implement this
+	if (start < 0 || end <= start || start >= s.codepoints || end >= s.codepoints) {
+		char* empty = "";
+		UStr u = new_ustr(empty);
+		return u;
+	}
+	if(s.is_ascii == 1) {
+		char* substring = malloc(end - start + 1);
+		for (int i = 0; i < end - start; i++) {
+			substring[i] = s.contents[i + start];
+		}
+		UStr u = new_ustr(substring);
+		return u;
+	}
+	int count = 0;
+	int cp_start = 0;
+	int cp_end = 0;
+	int i = 0;
+	while(s.contents[i] != '\0') {
+		if (count == start) {
+			cp_start = i;
+		}
+		if (count == end) {
+			cp_end = i;
+		}
+		char c = s.contents[i];
 
+		if ((c & 0x80) == 0x00) {
+            		i += 1;
+        	} 
+		else if ((c & 0xE0) == 0xC0) {
+            		i += 2;
+        	} 
+		else if ((c & 0xF0) == 0xE0) {
+            		i += 3;
+        	} 
+		else if ((c & 0xF8) == 0xF0) {
+            		i += 4;
+		}
+		count++;
+	}
+	char* substring = malloc(cp_end - cp_start + 1);
+        for (int i = 0; i < cp_end - cp_start; i++) {
+                substring[i] = s.contents[i + cp_start];
+        }
+        UStr u = new_ustr(substring);
+        return u; 
 }
 
 /*
@@ -70,7 +114,6 @@ UStr reverse(UStr s) {
 	// TODO: implement this
 
 }
-
 
 void print_ustr(UStr s) {
 	printf("%s [codepoints: %d | bytes: %d]", s.contents, s.codepoints, s.bytes);
